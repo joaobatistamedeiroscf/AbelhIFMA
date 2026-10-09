@@ -11,10 +11,22 @@ class AbelhIFMA extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'AbelhIFMA',
       theme: AppTheme.light,
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'AbelhIFMA',
+      home: Scaffold(
+        body: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/backgrounds/favos.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: const SafeArea(
+            child: Center(
+              child: Text(
+                'AbelhIFMA',
+              ),
+            ),
           ),
         ),
       ),
