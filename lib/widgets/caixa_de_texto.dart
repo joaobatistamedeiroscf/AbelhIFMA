@@ -1,17 +1,27 @@
-import 'package:abelhifma/app/theme/app_colors.dart';
-import 'package:abelhifma/app/theme/app_radius.dart';
-import 'package:abelhifma/app/theme/app_text_styles.dart';
-import 'package:abelhifma/app/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
-class CaixaDeTexto extends StatelessWidget{
+import '../app/theme/app_colors.dart';
+import '../app/theme/app_radius.dart';
+import '../app/theme/app_text_styles.dart';
+
+/// Campo reutilizável com rótulo, validação e suporte a senha.
+class CaixaDeTexto extends StatelessWidget {
   const CaixaDeTexto({
     super.key,
-    required this.label, //o nome do campo, como "E-mail" ou "Senha"
-    this.hint, //o texto de exemplo dentro do campo
-    this.controller, //permite ler e controlar o texto digitado
-    this.obscureText = false, //oculta o conteúdo quando for uma senha
+    required this.label,
+    this.hint,
+    this.controller,
+    this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.validator,
+    this.onChanged,
+    this.onFieldSubmitted,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.errorText,
+    this.enabled = true,
+    this.textInputAction,
+    this.autofillHints,
   });
 
   final String label;
@@ -19,45 +29,98 @@ class CaixaDeTexto extends StatelessWidget{
   final TextEditingController? controller;
   final bool obscureText;
   final TextInputType keyboardType;
-  
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final String? errorText;
+  final bool enabled;
+  final TextInputAction? textInputAction;
+  final Iterable<String>? autofillHints;
+
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        filled: true,
-        fillColor: AppColors.textoSecundario,
-
-        labelStyle: AppTextStyles.body,
-        hintStyle: AppTextStyles.caption,
-        errorStyle: AppTextStyles.caption.copyWith(
-          color: AppColors.erro,
+    final border = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(AppRadius.button),
+      borderSide: const BorderSide(color: Color(0xFFDDE3E0)),
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ExcludeSemantics(
+          child: Text(
+            label,
+            style: AppTextStyles.caption.copyWith(
+              color: AppColors.carvao,
+              fontWeight: FontWeight.w600,
+              height: 1.2,
+            ),
+          ),
         ),
-        
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
+        const SizedBox(height: 5),
+        Semantics(
+          label: label,
+          child: TextFormField(
+            controller: controller,
+            enabled: enabled,
+            obscureText: obscureText,
+            keyboardType: keyboardType,
+            textInputAction: textInputAction,
+            autofillHints: autofillHints,
+            autocorrect: false,
+            enableSuggestions: !obscureText,
+            validator: validator,
+            forceErrorText: errorText,
+            onChanged: onChanged,
+            onFieldSubmitted: onFieldSubmitted,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            style: AppTextStyles.body.copyWith(height: 1.2),
+            decoration: InputDecoration(
+              hintText: hint,
+              filled: true,
+              fillColor: AppColors.branco,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 15,
+              ),
+              hintStyle: AppTextStyles.body.copyWith(
+                color: AppColors.textoSecundario,
+                height: 1.2,
+              ),
+              errorStyle: AppTextStyles.caption.copyWith(
+                color: AppColors.erro,
+                fontSize: 10,
+              ),
+              errorMaxLines: 2,
+              prefixIcon: prefixIcon == null
+                  ? null
+                  : Padding(
+                      padding: const EdgeInsets.only(left: 12, right: 8),
+                      child: prefixIcon,
+                    ),
+              prefixIconConstraints: const BoxConstraints(
+                minWidth: 38,
+                minHeight: 18,
+              ),
+              suffixIcon: suffixIcon,
+              border: border,
+              enabledBorder: border,
+              disabledBorder: border,
+              focusedBorder: border.copyWith(
+                borderSide: const BorderSide(color: AppColors.verde, width: 2),
+              ),
+              errorBorder: border.copyWith(
+                borderSide: const BorderSide(color: AppColors.erro),
+              ),
+              focusedErrorBorder: border.copyWith(
+                borderSide: const BorderSide(color: AppColors.erro, width: 2),
+              ),
+            ),
+          ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          borderSide: const BorderSide(color: Color(0xFFD0D5DD)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          borderSide: const BorderSide(color: AppColors.verde, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          borderSide: const BorderSide(color: AppColors.erro),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.button),
-          borderSide: const BorderSide(color: AppColors.erro, width: 2),
-        ),
-      ),
+      ],
     );
   }
 }
